@@ -12,14 +12,24 @@ public class App
     {
         System.out.println( "Starting" );
 
+        try {
+            SendArpRequest.getMac("192.168.1.1");
+
+        } catch (Exception e) {
+            System.out.println("nope");
+        }
+
+        /*
         DataShare data_share = new DataShare();
 
         discover(data_share);
 
         System.out.println("Scan Completed");
         data_share.get().forEach((key, value) -> System.out.println(key + " " + value));
+        */
     }
 
+    /*
     public static void discover(DataShare ds)
     {
         long initialT = System.currentTimeMillis();
@@ -28,7 +38,7 @@ public class App
         try {
             checkHosts("192.168.1", ds);
             finalT = System.currentTimeMillis();
-            
+
         } catch (Exception e) {
             //System.out.println("whoops: " + e.toString());
         }
@@ -46,12 +56,13 @@ public class App
             Discover d = new Discover(host, ds);
 
             t = new Thread(d);
-            
+
             t.start();
         }
 
         //t.join();
     }
+    */
 
 
 }
