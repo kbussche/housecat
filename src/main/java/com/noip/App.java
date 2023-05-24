@@ -1,6 +1,8 @@
 package com.noip;
 
 import java.net.InetAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Hello world!
@@ -22,36 +24,28 @@ public class App
 
     public static void discover(DataShare ds)
     {
-        long initialT = System.currentTimeMillis();
-        long finalT = 0;
-
         try {
             checkHosts("192.168.1", ds);
-            finalT = System.currentTimeMillis();
             
         } catch (Exception e) {
             //System.out.println("whoops: " + e.toString());
         }
-
-        //System.out.println("Scan Completed taking " + (finalT - initialT) + " miliseconds approximately!");
     }
 
     public static void checkHosts(String subnet, DataShare ds) throws Exception{
-        int timeout=1000;
+        ExecutorService executor = Executors.newFixedThreadPool(50);
 
-        Thread t;
+        int timeout=1000;
 
         for (int i=1;i<255;i++) {
             String host=subnet + "." + i;
             Discover d = new Discover(host, ds);
-
-            t = new Thread(d);
-            
-            t.start();
+            executor.execute(d);
+        }
+        executor.shutdown();
+        while (!executor.isTerminated()) {
         }
 
-        //t.join();
+        System.out.println("Finished all threads");
     }
-
-
 }

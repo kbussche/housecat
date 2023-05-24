@@ -2,6 +2,11 @@ package com.noip;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Scanner;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Discover implements Runnable
 {
@@ -16,30 +21,53 @@ public class Discover implements Runnable
 
     public void run()
     {
-        if (check(check_ip)) {
-            this.ds.set(check_ip, "good");
+        String mac = check(check_ip);
+        if (! mac.isEmpty() ) {
+            this.ds.set(check_ip, mac);
         }
     }
 
-    public static boolean check(String ip)
+    public static String check(String ip)
     {
         int timeout = 1000;
+        String mac = "";
         try {
             if (InetAddress.getByName(ip).isReachable(timeout)) {
                 //System.out.println(ip + " is reachable");
-                InetAddress localIP = InetAddress.getByName(ip);
-                NetworkInterface ni = NetworkInterface.getByInetAddress(localIP);
-                byte[] macAddress = ni.getHardwareAddress();
-                String mac = new String(macAddress);
+                mac = getMacAddress(ip);
                 //System.out.println(ip + " " + mac);
-                return true;
+                return mac;
             }
 
         } catch (Exception e) {
             System.out.println("whoops " + e.toString());
-            return false;
+            return mac;
         }
 
-        return false;
+        return mac;
+    }
+
+    public static String getMacAddress(String ip) throws IOException
+    {
+        String mac = "";
+        String cmd = "arp " + ip;
+        Scanner s = new Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter("\\A");
+        String result = s.hasNext() ? s.next() : "";
+
+        String[] parts = result.split(" ");
+
+        for (String part: parts) {
+            if (validateMac(part)) {
+                mac = part;
+            }
+        }
+
+        return mac;
+    }
+
+    private static boolean validateMac(String mac) {
+        Pattern p = Pattern.compile("^([a-fA-F0-9][a-fA-F0-9][:-]){5}[a-fA-F0-9][a-fA-F0-9]$");
+        Matcher m = p.matcher(mac);
+        return m.find();
     }
 }
