@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.HashMap;
+import java.nio.charset.Charset;
+
 
 
 public class Discover implements Runnable
@@ -45,16 +47,20 @@ public class Discover implements Runnable
 
     public static String check(String ip)
     {
-        int timeout = 1000;
+        int timeout = 6000;
         String mac = "";
         try {
-            if (InetAddress.getByName(ip).isReachable(timeout)) {
+            System.out.println("A " + ip+"");
+            System.out.println("B " + new String(ip.getBytes(Charset.forName("ASCII"))));
+            InetAddress addr = InetAddress.getByName(ip);
+            if (addr.isReachable(timeout)) {
                 //System.out.println(ip + " is reachable");
                 mac = getMacAddress(ip);
                 return mac;
             }
 
         } catch (Exception e) {
+            System.out.println(ip + " -> " + e.toString());
             return mac;
         }
 

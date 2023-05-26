@@ -32,10 +32,9 @@ public class App
         data_share.get().forEach((key, value)  -> {
             System.out.println(key + " " + value);
             try {
-            PortScanner p = new PortScanner();
-            p.runPortScan(key + "", 1000);
+                PortScanner p = new PortScanner();
+                p.runPortScan(key + "", 5000);
             } catch (Exception e) {}
-            
         });
     }
 
@@ -53,7 +52,7 @@ public class App
     }
 
     public static void checkHosts(String subnet, DataShare ds, MacVendor mv) throws Exception{
-        ExecutorService executor = Executors.newFixedThreadPool(50);
+        ExecutorService executor = Executors.newFixedThreadPool(150);
 
         int timeout=1000;
 
@@ -63,6 +62,7 @@ public class App
             executor.execute(d);
         }
         executor.shutdown();
+
         while (!executor.isTerminated()) {
         }
 
@@ -72,6 +72,7 @@ public class App
     private static String getSystemIp()
     {
         String localIp = "192.168.0.1";
+        NetworkInterface nif;
 
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -86,6 +87,7 @@ public class App
                         InetAddress ia = inetAddresses.nextElement();
                         if (ia.isSiteLocalAddress()) {
                             localIp = ia + "";
+                            nif = networkInterface;
                         }
                     }
                 }
@@ -95,6 +97,7 @@ public class App
         if (localIp.contains("/")) {
             localIp = localIp.replace("/", "");
         }
+        // return nif and localip somehow
         return localIp;
     }
 }

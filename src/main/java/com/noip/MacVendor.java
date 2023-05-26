@@ -10,10 +10,6 @@ public class MacVendor
 {
     HashMap<String, String> map = new HashMap<String, String> ();
 
-    public void MacVendor()
-    {
-    }
-
     public void load()
     {
         this.loadMacVendors();
