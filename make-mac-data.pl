@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-$ans = `wget https://standards-oui.ieee.org`;
+#$ans = `wget https://standards-oui.ieee.org`;
+#$ans = `curl https://standards-oui.ieee.org > index.html`;
 $ans = `cat index.html | grep "base 16" > index_tmp`;
 
  

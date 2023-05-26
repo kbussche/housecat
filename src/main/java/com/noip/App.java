@@ -29,7 +29,14 @@ public class App
         discover(data_share, mv);
 
         System.out.println("Scan Completed");
-        data_share.get().forEach((key, value) -> System.out.println(key + " " + value));
+        data_share.get().forEach((key, value)  -> {
+            System.out.println(key + " " + value);
+            try {
+            PortScanner p = new PortScanner();
+            p.runPortScan(key + "", 1000);
+            } catch (Exception e) {}
+            
+        });
     }
 
     public static void discover(DataShare ds, MacVendor mv)
